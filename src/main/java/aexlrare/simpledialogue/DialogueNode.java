@@ -1,70 +1,53 @@
 package aexlrare.simpledialogue;
 
 import com.google.gson.JsonObject;
-import java.util.Collections;
+import com.google.gson.annotations.SerializedName;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DialogueNode {
-    private String id;
-    private String text;
-    private List<Option> options;
+    @SerializedName("id")
+    public String id;
 
-    // 控制字段 (与编辑器直接对应)
-    public int cooldown = 0;
+    @SerializedName("text")
+    public String text;
+
+    @SerializedName("options")
+    public List<Option> options = new ArrayList<>();
+
+    @SerializedName("one_time")
     public boolean one_time = false;
-    public String next_dialogue_id;
+
+    @SerializedName("cooldown")
+    public int cooldown = 0;
 
     public String getId() { return id; }
-    public String getText() { return text; }
-
-    /**
-     * 获取选项列表
-     * 包含"多级对话"逻辑：如果没配置选项但有 next_dialogue_id，自动生成跳转按钮。
-     */
-    public List<Option> getOptions() {
-        // 1. 如果 JSON 里配置了选项，优先使用配置的
-        if (options != null && !options.isEmpty()) {
-            return options;
-        }
-
-        // 2. 如果没写选项，但配置了下一段对话 (Editor 中的虚线连接)
-        if (next_dialogue_id != null && !next_dialogue_id.isEmpty()) {
-            Option autoOption = new Option();
-            autoOption.text = "[ 继续 ]"; // 这个文本被 DialogueManager 用于特殊渲染
-            autoOption.target_id = next_dialogue_id;
-            // conditions 和 actions 默认为 null，但下方的 Getter 会安全处理
-            return Collections.singletonList(autoOption);
-        }
-
-        // 3. 对话结束
-        return options;
-    }
+    public String getText() { return text != null ? text : ""; }
+    public List<Option> getOptions() { return options; }
 
     public static class Option {
-        // 使用 private 防止外部直接访问 null 字段
-        private String text;
-        private String target_id;
-        private JsonObject conditions;
-        private JsonObject actions;
+        @SerializedName("text")
+        public String text;
 
-        public Option() {}
+        @SerializedName("target_id")
+        public String target_id;
 
-        public String getText() {
-            return text == null ? "" : text;
-        }
+        @SerializedName("conditions")
+        public JsonObject conditions;
 
-        public String getTargetId() {
-            return target_id;
-        }
+        @SerializedName("actions")
+        public JsonObject actions;
 
-        // --- 安全的 Getter (关键修改) ---
-        // 即使 JSON 中没有 conditions 字段，这里也会返回一个空的 JsonObject，防止 NPE
-        public JsonObject getConditions() {
-            return conditions != null ? conditions : new JsonObject();
-        }
+        // QTE 机制字段
+        @SerializedName("qte_timeout")
+        public int qte_timeout = 0; // 超时秒数，0表示无QTE
 
-        public JsonObject getActions() {
-            return actions != null ? actions : new JsonObject();
-        }
+        @SerializedName("timeout_target")
+        public String timeout_target; // 超时后跳转的对话ID
+
+        public String getText() { return text != null ? text : "继续"; }
+        public String getTargetId() { return target_id; }
+        public JsonObject getConditions() { return conditions; }
+        public JsonObject getActions() { return actions; }
     }
 }

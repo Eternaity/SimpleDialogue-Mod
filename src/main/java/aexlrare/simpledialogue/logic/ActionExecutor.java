@@ -40,11 +40,12 @@ public class ActionExecutor {
                 Item item = Registries.ITEM.get(id);
                 // 检查背包里是否有足够的物品
                 if (player.getInventory().count(item) >= count) {
-                    // 1.21 移除物品的标准写法 (传入 craftingInput 以防鬼影物品，也可传 null)
+                    // 1.21 移除物品
+                    // 第三个参数传入 null，表示不在特定的 craftingInventory 中查找，而是直接从玩家背包移除
                     player.getInventory().remove(
                             stack -> stack.isOf(item),
                             count,
-                            player.playerScreenHandler.getCraftingInput()
+                            null
                     );
                 }
             }
@@ -54,7 +55,7 @@ public class ActionExecutor {
         if (actions.has("run_command")) {
             String command = actions.get("run_command").getAsString();
             if (!command.isEmpty()) {
-                // 以 2 级权限 (命令方块级别) 执行，并静默输出
+                // 以 2 级权限执行
                 player.getServer().getCommandManager().executeWithPrefix(
                         player.getCommandSource().withLevel(2).withSilent(),
                         command

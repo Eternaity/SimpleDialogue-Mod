@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "id": "simpledialogue",
-  "version": "0.1-1.21",
+  "version": "0.2-1.21",
   "name": "SimpleDialogue",
-  "description": "Simple Dialogue Mod",
+  "description": "A Simple Dialogue Mod made by Aexlrare,for DustOath.",
   "authors": [
-    "Me!"
+    "Aexlrare"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
@@ -14,6 +14,10 @@
   "license": "CC0-1.0",
   "icon": "assets/simpledialogue/icon.png",
   "environment": "*",
+  "mixins": [
+    "simpledialogue.mixins.json"
+  ],
+
   "entrypoints": {
     "main": [
       "aexlrare.simpledialogue.SimpleDialogue"

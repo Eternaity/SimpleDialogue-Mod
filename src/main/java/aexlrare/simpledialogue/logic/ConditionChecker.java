@@ -44,7 +44,6 @@ public class ConditionChecker {
                     return false; // 物品不够
                 }
             } else {
-                // 如果物品ID写错了，为了安全起见，我们认为条件不满足
                 return false;
             }
         }

@@ -1,37 +1,22 @@
 package aexlrare.simpledialogue;
-
-import com.google.gson.JsonObject;
 import net.minecraft.util.math.BlockPos;
-
+import java.util.List;
 public class Region {
     public String id;
     public String dialogueId;
-    public JsonObject actions;
-    public BlockPos minPos;
-    public BlockPos maxPos;
+    public List<String> actions;
+    public BlockPos minPos, maxPos;
+    public boolean one_time = false;
+    public int cooldown = 0;
 
-    // 新增控制字段
-    public int cooldown = 0;      // 区域触发冷却 (秒)
-    public boolean one_time = false; // 是否只触发一次
-
-    // 构造函数
-    public Region(String id, String dialogueId, JsonObject actions, BlockPos minPos, BlockPos maxPos) {
-        this.id = id;
-        this.dialogueId = dialogueId;
-        this.actions = actions;
-        this.minPos = minPos;
-        this.maxPos = maxPos;
-        // 默认 cooldown=0, one_time=false，无需在构造中强制传参，GSON会自动处理默认值
+    public Region(String id, String did, List<String> acts, BlockPos p1, BlockPos p2) {
+        this.id = id; this.dialogueId = did; this.actions = acts;
+        this.minPos = new BlockPos(Math.min(p1.getX(), p2.getX()), Math.min(p1.getY(), p2.getY()), Math.min(p1.getZ(), p2.getZ()));
+        this.maxPos = new BlockPos(Math.max(p1.getX(), p2.getX()), Math.max(p1.getY(), p2.getY()), Math.max(p1.getZ(), p2.getZ()));
     }
-
-    public boolean contains(BlockPos pos) {
-        if (minPos == null || maxPos == null) return false;
-
-        return pos.getX() >= Math.min(minPos.getX(), maxPos.getX()) &&
-                pos.getX() <= Math.max(minPos.getX(), maxPos.getX()) &&
-                pos.getY() >= Math.min(minPos.getY(), maxPos.getY()) &&
-                pos.getY() <= Math.max(minPos.getY(), maxPos.getY()) &&
-                pos.getZ() >= Math.min(minPos.getZ(), maxPos.getZ()) &&
-                pos.getZ() <= Math.max(minPos.getZ(), maxPos.getZ());
+    public boolean contains(BlockPos p) {
+        return p.getX()>=minPos.getX() && p.getX()<=maxPos.getX() &&
+                p.getY()>=minPos.getY() && p.getY()<=maxPos.getY() &&
+                p.getZ()>=minPos.getZ() && p.getZ()<=maxPos.getZ();
     }
 }
