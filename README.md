@@ -1,3 +1,5 @@
+# Simple Dialogue - Minecraft 对话系统模组
+
 一个功能完整的 Minecraft 1.21 Fabric 对话系统模组，支持复杂的对话树、条件判断、动作执行和沉浸式交互体验。
 
 ## 核心功能
@@ -42,3 +44,87 @@
 - **冷却系统** - 设置对话触发间隔时间
 - **区域管理** - 创建、重命名、删除、传送到区域
 - **调试工具** - 重置玩家对话历史，检查标签状态
+
+## 命令列表
+
+```
+/sd help                                    - 显示帮助
+/sd reload                                  - 重载配置
+/sd list                                    - 列出所有对话ID
+
+/sd bind <实体> <对话ID>                     - 绑定实体到对话
+/sd unbind <实体>                           - 解除实体绑定
+
+/sd block bind <对话ID>                     - 绑定选中方块
+/sd block unbind                            - 解除方块绑定
+
+/sd region create <区域ID> <对话ID>          - 创建区域
+/sd region remove <区域ID>                  - 删除区域
+/sd region rename <旧ID> <新ID>             - 重命名区域
+/sd region set <区域ID> <对话ID>            - 修改区域对话
+/sd region list                             - 列出所有区域
+/sd region tp <区域ID>                      - 传送到区域
+/sd region flag <区域ID> one_time <true|false>  - 设置一次性触发
+/sd region flag <区域ID> cooldown <秒数>        - 设置冷却时间
+
+/sd debug reset <玩家>                      - 重置玩家对话历史
+/sd debug check <玩家>                      - 检查玩家标签
+```
+
+## 配置文件
+
+配置文件位于 `config/simpledialogue/`：
+
+- `dialogues.json` - 对话内容定义
+- `bindings.json` - 实体绑定数据
+- `regions.json` - 区域配置
+- `block_bindings.json` - 方块绑定数据
+
+### 对话配置示例
+
+```json
+[
+  {
+    "id": "welcome",
+    "text": "欢迎来到我的世界！",
+    "one_time": false,
+    "cooldown": 0,
+    "options": [
+      {
+        "text": "你好",
+        "target_id": "greeting",
+        "conditions": {
+          "has_item": "minecraft:diamond",
+          "count": 1
+        },
+        "actions": {
+          "remove_item": "minecraft:diamond",
+          "count": 1,
+          "add_tag": "greeted"
+        },
+        "qte_timeout": 10,
+        "timeout_target": "timeout_dialogue"
+      }
+    ]
+  }
+]
+```
+
+## 用户体验
+
+- **沉浸式HUD** - 屏幕中央显示对话框，自动缩放和居中
+- **可视化选择** - 魔杖高亮显示选中的区域和方块
+- **智能交互** - 防抖动设计，避免误触发
+- **聊天同步** - 对话内容同步显示在聊天框
+
+## 技术特性
+
+- Fabric API 支持
+- Model Context Protocol (MCP) 兼容
+- 客户端-服务端网络同步
+- Mixin 注入实现滚轮事件拦截
+- 完整的数据持久化
+
+**版本：** 1.0.0  
+**Minecraft：** 1.21  
+**Fabric Loader：** 0.17.3+
